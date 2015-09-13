@@ -1,0 +1,82 @@
+/* iWidget iOS7 kiki-style with circle icons */
+/*
+	BACKGROUND-COLORS:
+						red: 	#ff3333; 
+						green: 	#34d800; 
+						blue: 	#2e7eff;
+						
+	LABELS:				
+						'−';
+						'+';					
+						*/
+
+.edit {
+	background-color:#2e7eff; 
+	-webkit-border-top-left-radius:42px;
+	-moz-border-radius-topleft:42px;
+	border-top-left-radius:42px;
+	-webkit-border-top-right-radius:42px;
+	-moz-border-radius-topright:42px;
+	border-top-right-radius:42px;
+	-webkit-border-bottom-right-radius:42px;
+	-moz-border-radius-bottomright:42px;
+	border-bottom-right-radius:42px;
+	-webkit-border-bottom-left-radius:42px;
+	-moz-border-radius-bottomleft:42px;
+	border-bottom-left-radius:42px;
+	text-indent:0px;
+	display:inline-block;
+	color:#ffffff;
+	font-family:"Helvetica Neue";
+	font-size:36px;
+	font-weight:lighter;
+	font-style:normal;
+	height:50px;
+	line-height:50px;
+	width:50px;
+	text-decoration:none;
+	text-align:center;
+	visibility: visible;
+	opacity: 0.7;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	unselectable='on'
+	onselectstart='return false;' 
+	onmousedown='return false;'
+	}
+
+.button {
+	background-color:#2e7eff;
+	-webkit-border-top-left-radius:42px;
+	-moz-border-radius-topleft:42px;
+	border-top-left-radius:42px;
+	-webkit-border-top-right-radius:42px;
+	-moz-border-radius-topright:42px;
+	border-top-right-radius:42px;
+	-webkit-border-bottom-right-radius:42px;
+	-moz-border-radius-bottomright:42px;
+	border-bottom-right-radius:42px;
+	-webkit-border-bottom-left-radius:42px;
+	-moz-border-radius-bottomleft:42px;
+	border-bottom-left-radius:42px;
+	text-indent:0px;
+	display:inline-block;
+	color:#ffffff;
+	font-family:"Helvetica Neue";
+	font-size:40px;
+	font-weight:lighter;
+	font-style:normal;
+	height:50px;
+	line-height:40px;
+	width:50px;
+	text-decoration:none;
+	text-align:center;
+	visibility: visible;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	unselectable='on'
+	onselectstart='return false;' 
+	onmousedown='return false;'
+	}

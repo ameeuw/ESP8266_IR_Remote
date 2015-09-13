@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+	    
+		<meta charset="UTF-8" />
+		<title>Interface</title>
+        
+		<script src="funcs.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css" media="screen">@import "UI.css";</style>
+		<script type="text/javascript" charset="utf-8">
+		
+		var connected = false;
+		
+		function WSClick()
+		{
+			if (connected)
+			{
+				disconnectClient()
+			}
+			else
+			{
+				WebSocketTest()
+			}
+		}
+		
+		function WebSocketTest()
+		{
+		  if ("WebSocket" in window)
+		  {
+			 document.getElementById("wsConnect").style.background='rgb(' + 0xF0 + ',' + 0xF0 + ',' + 0x32 + ')';
+			 // Let us open a web socket
+			 var ws = new WebSocket("ws://m-e-e-u-w.de:62763");
+			 
+			 
+			 onsendmessage = function(msg)
+			 {
+				ws.send(msg);
+			 }
+			 
+			 disconnectClient = function()
+			 {
+				ws.close()
+			 }
+			 
+			 ws.onopen = function()
+			 {
+				// Web Socket is connected, send data using send()
+				ws.send("This is iWidget!");
+				document.getElementById("wsConnect").style.background='rgb(' + 0x00 + ',' + 0xFF + ',' + 0x00 + ')';
+				connected = true;
+			 };
+			 ws.onmessage = function (evt) 
+			 { 
+				var received_msg = evt.data;
+				//alert(received_msg);
+			 };
+			 ws.onclose = function()
+			 { 
+				// websocket is closed.
+				document.getElementById("wsConnect").style.background='rgb(' + 0xFF + ',' + 0x00 + ',' + 0x00 + ')';
+				connected = false;
+			 };
+		  }
+		  else
+		  {
+			 // The browser doesn't support WebSocket
+			 document.getElementById("wsConnect").style.background='rgb(' + 0xFF + ',' + 0x00 + ',' + 0x00 + ')';
+			 connected = false;
+		  }
+		}
+
+		function setGPIO(pin,elem)
+		{
+			if (document.getElementById(elem).style.background=='rgb(136, 136, 136)')
+			{
+				state=1;
+				document.getElementById(elem).style.background='#F0F032';
+			}
+			else
+			{
+				state=0;
+				document.getElementById(elem).style.background='#888888';
+			}
+			writeGPIO(pin, state);
+		}
+		
+		function setFAD(elem, saturation, lightness, speed)
+		{
+			if (document.getElementById(elem).style.background=='rgb(136, 136, 136)')
+			{
+				state=1;
+				document.getElementById(elem).style.background='#2D882D';
+			}
+			else
+			{
+				state=0;
+				document.getElementById(elem).style.background='#888888';
+			}
+			writeFAD(state,saturation,lightness,speed);
+		}
+		
+		function setSTR(elem, freq)
+		{
+			if (document.getElementById(elem).style.background=='rgb(136, 136, 136)')
+			{
+				state=1;
+				document.getElementById(elem).style.background='#2D882D';
+			}
+			else
+			{
+				state=0;
+				document.getElementById(elem).style.background='#888888';
+			}
+			writeSTR(state,freq);
+		}
+		
+		var r=0,g=0,b=0,h=0,s=0,l=0;
+		
+		function setVars(elem){
+			//Convert HSL Values
+			if ((elem=="hedit")||(elem=="sedit")||(elem=="ledit")) {
+				answer=hslToRgb((parseInt(document.getElementById("hedit").innerHTML)/16),
+								(parseInt(document.getElementById("sedit").innerHTML)/15), 
+								(parseInt(document.getElementById("ledit").innerHTML)/15));
+				r=answer[0];g=answer[1];b=answer[2];
+			}
+			else 	{
+				//Global variables to values of UI-Elements
+				r=parseInt(document.getElementById("redit").innerHTML)*17;
+				g=parseInt(document.getElementById("gedit").innerHTML)*17;
+				b=parseInt(document.getElementById("bedit").innerHTML)*17;
+				answer=rgbToHsl(r, g, b);
+				h=answer[0];s=answer[1];l=answer[2];
+			}
+			
+			//Color ToggleHSL-Button in selected color
+			//alert("R="+r+", G="+g+", B="+b);
+			document.getElementById("tHSL0").style.background='rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')';
+			document.getElementById("tHSL1").style.background='rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')';
+		}
+
+		
+		function toggleHSL(){
+			if (document.getElementById("hsl_section").style.display == "none")
+			{				
+				// RGB -> HSL
+				//toggle visibility
+				document.getElementById("hsl_section").style.display = "inline";
+				document.getElementById("rgb_section").style.display = "none";
+				
+				// setUI
+				setVars("redit");
+				document.getElementById("hedit").innerHTML=Math.round(h*15);
+				document.getElementById("sedit").innerHTML=Math.round(s*15);
+				document.getElementById("ledit").innerHTML=Math.round(l*15);
+			}
+			else
+			{	
+				// HSL -> RGB
+				//toggle visibility
+				document.getElementById("hsl_section").style.display="none";
+				document.getElementById("rgb_section").style.display = "inline";
+				
+				// setUI
+				setVars("hedit");
+				document.getElementById("redit").innerHTML=Math.round(r/17);
+				document.getElementById("gedit").innerHTML=Math.round(g/17);
+				document.getElementById("bedit").innerHTML=Math.round(b/17);
+			}
+		}
+		
+		function incr(elem)
+		{
+			if (parseInt(document.getElementById(elem).innerHTML)<15)
+				document.getElementById(elem).innerHTML=parseInt(document.getElementById(elem).innerHTML)+1;
+			setVars(elem);
+			writeRGB(r,g,b);
+		}
+		
+		
+		function decr(elem)
+		{
+			if (parseInt(document.getElementById(elem).innerHTML)>0)
+				document.getElementById(elem).innerHTML=parseInt(document.getElementById(elem).innerHTML)-1;
+			setVars(elem);
+			writeRGB(r,g,b);
+		}
+		
+		function setFull(elem)
+		{
+			if (parseInt(document.getElementById(elem).innerHTML)==15)
+				document.getElementById(elem).innerHTML=0;
+			else
+				document.getElementById(elem).innerHTML=15;
+			setVars(elem);
+			writeRGB(r,g,b);
+		}
+		
+		</script>
+		
+    </head>
+    <body style="filter:alpha (opacity=10);" onload=readRGB()>
+	<div id="widget" style="	-webkit-transform: scale(1);">
+
+<div id="rgb_section" style="display:inline;">	
+<!-- RED SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:0px;background:#ed002f;"  id="r-" onclick=decr("redit")>−</div>
+<div class="edit" style="position:absolute;left:60px;top:0px;Background:#888888;" id="redit" onclick=setFull("redit")>0</div>
+<div class="button" style="position:absolute;left:120px;top:0px;background:#ed002f;" id="r+" onclick=incr("redit")>+</div>
+
+<!-- GREEN SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:60px;background:#34d800;" id="g-" onclick=decr("gedit")>−
+</div>
+<div class="edit" style="position:absolute;left:60px;top:60px;Background:#888888;" id="gedit" onclick=setFull("gedit")>0
+</div>
+<div class="button" style="position:absolute;left:120px;top:60px;background:#34d800;" id="g+" onclick=incr("gedit")>+
+</div>
+
+<!-- BLUE SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:120px;background:#1240ab;" id="b-" onclick=decr("bedit")>−
+</div>
+<div class="edit" style="position:absolute;left:60px;top:120px;background:#888888;" id="bedit" onclick=setFull("bedit")>0
+</div>
+<div class="button" style="position:absolute;left:120px;top:120px;background:#1240ab;" id="b+" onclick=incr("bedit")>+
+</div>
+
+<!-- RF Section !-->
+<div class="edit" style="position:absolute;left:240px;top:0px;Background:#888888;" id="gpio_1" onclick=setGPIO("1","gpio_1")>1</div>
+<div class="edit" style="position:absolute;left:240px;top:60px;Background:#888888;" id="gpio_2" onclick=setGPIO("2","gpio_2")>2</div>
+<div class="edit" style="position:absolute;left:240px;top:120px;Background:#888888;" id="gpio_3" onclick=setGPIO("3","gpio_3")>3</div>
+
+</div>
+
+
+<!-- TOGGLE BUTTONS !-->
+
+<div class="button" style="position:absolute;left:180px;top:0px;background:#cccccc;opacity: 0.6;" id="tHSL0" onclick=toggleHSL()>
+</div>
+<div class="button" style="position:absolute;left:180px;top:60px;background:#cccccc;opacity: 0.6;" id="tHSL1" onclick=toggleHSL()>
+</div>
+<div class="button" style="position:absolute;left:180px;top:120px;background:#cccccc;opacity: 0.6;" id="wsConnect" onclick=WSClick()>
+</div>
+
+
+<div id="hsl_section" style="display:none;">
+<!-- HUE SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:0px;background:#33cccc;" id="h-" onclick=decr("hedit")>−
+</div>
+<div class="edit" style="position:absolute;left:60px;top:0px;background:#888888;" id="hedit" onclick=setFull("hedit")>0
+</div>
+<div class="button" style="position:absolute;left:120px;top:0px;background:#33cccc;" id="h+" onclick=incr("hedit")>+
+</div>
+
+<!-- SATURATION SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:60px;background:#aa33ff;" id="s-" onclick=decr("sedit")>−
+</div>
+<div class="edit" style="position:absolute;left:60px;top:60px;background:#888888;" id="sedit" onclick=setFull("sedit")>0
+</div>
+<div class="button" style="position:absolute;left:120px;top:60px;background:#aa33ff;" id="s+" onclick=incr("sedit")>+
+</div>
+
+<!-- BRIGHTNESS SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:120px;background:#ffa200;" id="l-" onclick=decr("ledit")>−
+</div>
+<div class="edit" style="position:absolute;left:60px;top:120px;background:#888888;" id="ledit" onclick=setFull("ledit")>0
+</div>
+<div class="button" style="position:absolute;left:120px;top:120px;background:#ffa200;" id="l+" onclick=incr("ledit")>+
+</div>
+
+<!-- RF Section !-->
+<div class="edit" style="position:absolute;left:240px;top:0px;Background:#888888;" id="fcn_1"   onclick=setSTR("fcn_1",10)>S</div>
+<div class="edit" style="position:absolute;left:240px;top:60px;Background:#888888;" id="fcn_2"  onclick=setFAD("fcn_2",1,0.5,0.005)>M</div>
+<div class="edit" style="position:absolute;left:240px;top:120px;Background:#888888;" id="fcn_3" onclick=setFAD("fcn_3",1,0.5,0.01)>F</div>
+
+
+</div>
+
+
+
+
+</div>
+    </body>
+</html>

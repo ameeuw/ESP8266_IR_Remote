@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Interface</title>
+
+		<script src="funcs.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css" media="screen">@import "UI.css";</style>
+		<script type="text/javascript" charset="utf-8">
+
+		var r,g,b;
+
+		function setVars(elem){
+			//Convert HSL Values
+			if ((elem=="hedit")||(elem=="sedit")||(elem=="bredit")) {
+				answer=hslToRgb((parseInt(document.getElementById("hedit").innerHTML)/16), (parseInt(document.getElementById("sedit").innerHTML)/15), (parseInt(document.getElementById("bredit").innerHTML)/15));
+				r=answer[0];g=answer[1];b=answer[2];
+				setUI();
+			}
+			else 	{
+				//Global variables to values of UI-Elements
+				r=parseInt(document.getElementById("redit").innerHTML)*17;
+				g=parseInt(document.getElementById("gedit").innerHTML)*17;
+				b=parseInt(document.getElementById("bedit").innerHTML)*17;
+			}
+
+			//Color ToggleHSL-Button in selected color
+			//alert("R="+r+", G="+g+", B="+b);
+			document.getElementById("tHSL").style.background='rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')';
+		}
+
+		function setUI(){
+			document.getElementById("redit").innerHTML=Math.round(r/17);
+			document.getElementById("gedit").innerHTML=Math.round(g/17);
+			document.getElementById("bedit").innerHTML=Math.round(b/17);
+		}
+
+		function toggleHSL(){
+			if (document.getElementById("hsl_section").style.display == "none")
+			{
+				document.getElementById("hsl_section").style.display = "inline";
+				document.getElementById("rgb_section").style.display = "none";
+			}
+			else
+			{
+				document.getElementById("hsl_section").style.display="none";
+				document.getElementById("rgb_section").style.display = "inline";
+			}
+		}
+
+		function incr(elem)
+		{
+			if (parseInt(document.getElementById(elem).innerHTML)<15)
+			document.getElementById(elem).innerHTML=parseInt(document.getElementById(elem).innerHTML)+1;
+			setVars(elem);
+			writeRGB(r,g,b);
+		}
+
+
+		function decr(elem)
+		{
+			if (parseInt(document.getElementById(elem).innerHTML)>0)
+			document.getElementById(elem).innerHTML=parseInt(document.getElementById(elem).innerHTML)-1;
+			setVars(elem);
+			writeRGB(r,g,b);
+		}
+
+		function setFull(elem)
+		{
+			if (parseInt(document.getElementById(elem).innerHTML)==15)
+			document.getElementById(elem).innerHTML=0;
+			else
+			document.getElementById(elem).innerHTML=15;
+			setVars(elem);
+			writeRGB(r,g,b);
+		}
+
+		</script>
+
+	</head>
+	<body style="filter:alpha (opacity=10);" onload=readRGB()>
+	<div id="widget" style="	-webkit-transform: scale(1);">
+
+<div id="rgb_section" style="display:inline;">	
+<!-- RED SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:0px;background:#ff3333;"  id="r-" onclick=decr("redit")>−</div>
+<div class="edit" style="position:absolute;left:70px;top:0px;Background:#888888;" id="redit" onclick=setFull("redit")>0</div>
+<div class="button" style="position:absolute;left:175px;top:0px;background:#ff3333;" id="r+" onclick=incr("redit")>+</div>
+
+<!-- GREEN SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:70px;background:#47ff47;" id="g-" onclick=decr("gedit")>−
+</div>
+<div class="edit" style="position:absolute;left:70px;top:70px;Background:#888888;" id="gedit" onclick=setFull("gedit")>0
+</div>
+<div class="button" style="position:absolute;left:175px;top:70px;background:#47ff47;" id="g+" onclick=incr("gedit")>+
+</div>
+
+<!-- BLUE SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:140px;background:#2e7eff;" id="b-" onclick=decr("bedit")>−
+</div>
+<div class="edit" style="position:absolute;left:70px;top:140px;background:#888888;" id="bedit" onclick=setFull("bedit")>0
+</div>
+<div class="button" style="position:absolute;left:175px;top:140px;background:#2e7eff;" id="b+" onclick=incr("bedit")>+
+</div>
+</div>
+
+
+<!-- TOGGLE BUTTON !-->
+<div class="button" style="position:absolute;left:245px;top:0px;height:205px;width:40px;background:#cccccc;opacity: 0.6;" id="tHSL" onclick=toggleHSL()>
+</div>
+
+
+<div id="hsl_section" style="display:none;">
+<!-- HUE SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:0px;background:#33cccc;" id="h-" onclick=decr("hedit")>−
+</div>
+<div class="edit" style="position:absolute;left:70px;top:0px;background:#888888;" id="hedit" onclick=setFull("hedit")>0
+</div>
+<div class="button" style="position:absolute;left:175px;top:0px;background:#33cccc;" id="h+" onclick=incr("hedit")>+
+</div>
+
+<!-- SATURATION SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:70px;background:#aa33ff;" id="s-" onclick=decr("sedit")>−
+</div>
+<div class="edit" style="position:absolute;left:70px;top:70px;background:#888888;" id="sedit" onclick=setFull("sedit")>0
+</div>
+<div class="button" style="position:absolute;left:175px;top:70px;background:#aa33ff;" id="s+" onclick=incr("sedit")>+
+</div>
+
+<!-- BRIGHTNESS SECTION !-->
+<div class="button" style="position:absolute;left:0px;top:140px;background:#ffa200;" id="br-" onclick=decr("bredit")>−
+</div>
+<div class="edit" style="position:absolute;left:70px;top:140px;background:#888888;" id="bredit" onclick=setFull("bredit")>0
+</div>
+<div class="button" style="position:absolute;left:175px;top:140px;background:#ffa200;" id="br+" onclick=incr("bredit")>+
+</div>
+
+</div>
+
+	</div>
+	</body>
+</html>
